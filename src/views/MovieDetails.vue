@@ -28,7 +28,6 @@ async function saveNewScore(newScore: number) {
   movieScore.value = newScore;
   updatingMovieScore.value = false;
 }
-
 </script>
 <template>
   <Loader v-if="detailsLoading" />
@@ -41,19 +40,18 @@ async function saveNewScore(newScore: number) {
     <header>
       <h1>{{ movieDetails.title }}</h1>
       <aside>
-        <Loader v-if="updatingMovieScore"/>
-        <Score v-else :value="movieScore" @score-changed="saveNewScore"/>
+        <Loader v-if="updatingMovieScore" />
+        <Score v-else :value="movieScore" @score-changed="saveNewScore" />
       </aside>
     </header>
     <div class="posterAndText">
-      <MoviePoster
-        :poster_path="movieDetails.poster_path"
-        :width="500"
-      />
-      <p>
+      <MoviePoster :poster_path="movieDetails.poster_path" :width="500" />
+      <div>
         <h2>Plot</h2>
-        {{ movieDetails.overview }}
-      </p>
+        <p>
+          {{ movieDetails.overview }}
+        </p>
+      </div>
     </div>
   </article>
 </template>

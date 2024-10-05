@@ -2,9 +2,9 @@
 import { ref } from "vue";
 import Icon from "./Icon.vue";
 
-defineProps<{ grade: number }>();
+defineProps<{ value: number | undefined }>();
 defineEmits<{
-  (e: "gradeChanged", value: number): void;
+  (e: "scoreChanged", value: number): void;
 }>();
 const hoverValue = ref<number | undefined>(undefined);
 </script>
@@ -16,8 +16,10 @@ const hoverValue = ref<number | undefined>(undefined);
       class="star"
       :key="i"
       name="star"
-      :fill="(hoverValue && hoverValue >= i) || grade >= i"
-      @click="$emit('gradeChanged', i)"
+      :fill="
+        value !== undefined && ((hoverValue && hoverValue >= i) || value >= i)
+      "
+      @click="$emit('scoreChanged', i)"
       @mouseover="hoverValue = i"
       @mouseleave="hoverValue = undefined"
     />
@@ -25,6 +27,10 @@ const hoverValue = ref<number | undefined>(undefined);
 </template>
 
 <style lang="scss" scoped>
+div {
+  display: flex;
+  flex-wrap: nowrap;
+}
 .star {
   cursor: pointer;
 }

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { getPopularMovies, Movie } from "../backend/api";
+import { getPopularMovies, MovieSnippet } from "../backend/api";
 import Loader from "../components/Loader.vue";
 import MovieItem from "../components/MovieItem.vue";
 
-const movies = ref<Movie[]>();
+const movies = ref<MovieSnippet[]>();
 const moviesLoading = ref(false);
 
 onMounted(async () => {

@@ -1,22 +1,33 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { getMovieDetails, MovieDetails } from "../backend/api";
+import * as api from "../backend/api";
+import { MovieDetails } from "../backend/api";
 import Loader from "../components/Loader.vue";
 import MoviePoster from "../components/MoviePoster.vue";
-import Grade from "../components/grade.vue";
+import Score from "../components/Score.vue";
 
 const route = useRoute();
 const id = computed(() => Number.parseInt(route.params.movieId as string));
 
 const movieDetails = ref<MovieDetails>();
 const detailsLoading = ref(false);
+const movieScore = ref<number | undefined>(undefined);
+const updatingMovieScore = ref(false);
 
 onMounted(async () => {
   detailsLoading.value = true;
-  movieDetails.value = await getMovieDetails(id.value);
+  movieDetails.value = await api.getMovieDetails(id.value);
+  movieScore.value = await api.getMovieScore(id.value);
   detailsLoading.value = false;
 });
+
+async function saveNewScore(newScore: number) {
+  updatingMovieScore.value = true;
+  await api.updateMovieScore(id.value, newScore);
+  movieScore.value = newScore;
+  updatingMovieScore.value = false;
+}
 
 </script>
 <template>
@@ -30,7 +41,8 @@ onMounted(async () => {
     <header>
       <h1>{{ movieDetails.title }}</h1>
       <aside>
-        <Grade :grade="1" @grade-changed="(v) => console.log('grade', v)"/>
+        <Loader v-if="updatingMovieScore"/>
+        <Score v-else :value="movieScore" @score-changed="saveNewScore"/>
       </aside>
     </header>
     <div class="posterAndText">
@@ -38,18 +50,10 @@ onMounted(async () => {
         :poster_path="movieDetails.poster_path"
         :width="500"
       />
-      <div>
-        <p>
-          <h2>Plot</h2>
-          {{ movieDetails.overview }}
-        </p>
-        <h3>Genres</h3>
-        <ul>
-          <li v-for="genre in movieDetails.genres">
-            {{ genre.name }}
-          </li>
-        </ul>
-      </div>
+      <p>
+        <h2>Plot</h2>
+        {{ movieDetails.overview }}
+      </p>
     </div>
   </article>
 </template>

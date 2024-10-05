@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { Movie } from "../backend/api";
+import { MovieSnippet } from "../backend/api";
 import MoviePoster from "./MoviePoster.vue";
 
-defineProps<{ movie: Movie }>();
+defineProps<{ movie: MovieSnippet }>();
 </script>
 
 <template>
   <RouterLink :to="`/movies/${movie.id}`">
     <MoviePoster :poster_path="movie.poster_path" />
-    <span>{{ movie.original_title }}</span>
+    <span>{{ movie.title }}</span>
   </RouterLink>
 </template>
 

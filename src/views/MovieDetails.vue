@@ -12,20 +12,18 @@ const id = computed(() => Number.parseInt(route.params.movieId as string));
 
 const movieDetails = ref<MovieDetails>();
 const detailsLoading = ref(false);
-const movieScore = ref<number | undefined>(undefined);
 const updatingMovieScore = ref(false);
 
 onMounted(async () => {
   detailsLoading.value = true;
   movieDetails.value = await api.getMovieDetails(id.value);
-  movieScore.value = await api.getMovieScore(id.value);
   detailsLoading.value = false;
 });
 
 async function saveNewScore(newScore: number) {
   updatingMovieScore.value = true;
   await api.updateMovieScore(id.value, newScore);
-  movieScore.value = newScore;
+  movieDetails.value!.score = newScore;
   updatingMovieScore.value = false;
 }
 </script>
@@ -41,7 +39,11 @@ async function saveNewScore(newScore: number) {
       <h1>{{ movieDetails.title }}</h1>
       <aside>
         <Loader v-if="updatingMovieScore" />
-        <Score v-else :value="movieScore" @score-changed="saveNewScore" />
+        <Score
+          v-else
+          :value="movieDetails.score"
+          @score-changed="saveNewScore"
+        />
       </aside>
     </header>
     <div class="posterAndText">

@@ -22,6 +22,7 @@ export type MovieDetails = {
   poster_path: string;
   overview: string;
   release_date: string;
+  score: number;
 };
 
 export async function getMovieDetails(movieId: number) {
